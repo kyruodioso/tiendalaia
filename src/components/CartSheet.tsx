@@ -6,6 +6,7 @@ import { X, Minus, Plus, ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { clsx } from 'clsx'
+import { toast } from 'sonner'
 
 
 
@@ -28,8 +29,6 @@ export default function CartSheet({ triggerClassName }: CartSheetProps) {
 
   if (!isMounted) return null
 
-
-
   const handleCheckout = async () => {
     setIsLoading(true)
     try {
@@ -41,13 +40,18 @@ export default function CartSheet({ triggerClassName }: CartSheetProps) {
         body: JSON.stringify({ items, shippingCost, customerData, shippingMethod }),
       })
 
-      const { init_point } = await response.json()
-      
-      if (init_point) {
-        window.location.href = init_point
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al procesar el pago')
       }
-    } catch (error) {
+
+      if (data.init_point) {
+        window.location.href = data.init_point
+      }
+    } catch (error: any) {
       console.error('Error:', error)
+      toast.error(error.message || 'Hubo un error al procesar tu compra. Por favor intenta nuevamente.')
     } finally {
       setIsLoading(false)
     }

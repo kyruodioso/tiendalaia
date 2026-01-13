@@ -12,7 +12,7 @@ const mp = new MercadoPagoConfig({
 export async function POST(req: Request) {
   try {
     const { items, shippingCost, customerData, shippingMethod } = await req.json()
-    
+
     // Server-side validation of shipping cost
     // If pickup, force shippingCost to 0
     const validatedShippingCost = shippingMethod === 'pickup' ? 0 : Number(shippingCost)
@@ -55,6 +55,16 @@ export async function POST(req: Request) {
 
     const orderNumber = `LAIA-${nanoid()}`
 
+    // Prepare address data safely
+    const shippingAddress = {
+      street: customerData.address || '',
+      number: '',
+      city: customerData.city || '',
+      province: customerData.province || '',
+      zipCode: customerData.zipCode || '',
+      apartment: customerData.apartment || '',
+    }
+
     // Create Order in Sanity
     const order = await client.create({
       _type: 'order',
@@ -64,14 +74,7 @@ export async function POST(req: Request) {
       customerDNI: customerData.dni,
       customerEmail: customerData.email,
       customerPhone: customerData.phone,
-      shippingAddress: {
-        street: customerData.address,
-        number: '', // You might want to split address or add a field
-        city: customerData.city,
-        province: customerData.province,
-        zipCode: customerData.zipCode,
-        apartment: customerData.apartment,
-      },
+      shippingAddress,
       products: items.map((item: any) => ({
         _key: `${item._id}-${item.size}`, // Unique key for array items
         product: { _type: 'reference', _ref: item._id },
@@ -85,29 +88,36 @@ export async function POST(req: Request) {
     })
 
     const origin = req.headers.get('origin') || 'http://localhost:3000'
-    
+
     const preference = new Preference(mp)
+
+    const payerData: any = {
+      name: customerData.fullName,
+      email: customerData.email,
+      phone: {
+        area_code: '',
+        number: customerData.phone,
+      },
+    }
+
+    // Only add address to payer if it exists (Shipping method)
+    if (shippingMethod === 'shipping' && customerData.address) {
+      payerData.address = {
+        zip_code: customerData.zipCode,
+        street_name: customerData.address,
+        street_number: '',
+      }
+    }
+
     const result = await preference.create({
       body: {
         items: preferenceItems,
-        payer: {
-          name: customerData.fullName,
-          email: customerData.email,
-          phone: {
-            area_code: '',
-            number: customerData.phone,
-          },
-          address: {
-            zip_code: customerData.zipCode,
-            street_name: customerData.address,
-            street_number: '',
-          },
-        },
+        payer: payerData,
         external_reference: order._id,
         back_urls: {
-          success: `http://localhost:3000/success`,
-          failure: `http://localhost:3000/canceled`,
-          pending: `http://localhost:3000/canceled`,
+          success: `${origin}/success`,
+          failure: `${origin}/canceled`,
+          pending: `${origin}/canceled`,
         },
         // auto_return: 'approved',
       },
