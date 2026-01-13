@@ -4,13 +4,16 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useCartStore } from '@/store/cart'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
-const shippingSchema = z.object({
+const baseSchema = z.object({
   fullName: z.string().min(3, 'Full name is required'),
   dni: z.string().min(7, 'Valid DNI is required'),
   email: z.string().email('Valid email is required'),
   phone: z.string().min(10, 'Valid phone number is required'),
+})
+
+const pickupSchema = baseSchema.extend({
   province: z.string().optional(),
   city: z.string().optional(),
   address: z.string().optional(),
@@ -18,25 +21,36 @@ const shippingSchema = z.object({
   zipCode: z.string().optional(),
 })
 
-export type ShippingFormData = z.infer<typeof shippingSchema>
+const deliverySchema = baseSchema.extend({
+  province: z.string().min(1, 'Provincia requerida'),
+  city: z.string().min(1, 'Ciudad requerida'),
+  address: z.string().min(1, 'Dirección requerida'),
+  apartment: z.string().optional(),
+  zipCode: z.string().min(1, 'Código Postal requerido'),
+})
+
+export type ShippingFormData = z.infer<typeof pickupSchema>
 
 export default function ShippingForm({ shippingMethod }: { shippingMethod: 'shipping' | 'pickup' }) {
   const { setCustomerData, customerData, setShippingZip } = useCartStore()
-  
+
+  const schema = useMemo(() => {
+    return shippingMethod === 'shipping' ? deliverySchema : pickupSchema
+  }, [shippingMethod])
+
   const {
     register,
-    handleSubmit,
     watch,
-    setValue,
     formState: { errors, isValid },
   } = useForm<ShippingFormData>({
-    resolver: zodResolver(shippingSchema),
+    resolver: zodResolver(schema),
     mode: 'onChange',
     defaultValues: customerData || {},
   })
 
   // Watch Zip Code to update shipping cost automatically if needed
   const zipCode = watch('zipCode')
+  const formValues = watch()
 
   useEffect(() => {
     if (shippingMethod === 'shipping' && zipCode && zipCode.length >= 4) {
@@ -44,12 +58,21 @@ export default function ShippingForm({ shippingMethod }: { shippingMethod: 'ship
     }
   }, [zipCode, setShippingZip, shippingMethod])
 
-  const onSubmit = (data: ShippingFormData) => {
-    setCustomerData(data)
-  }
+  // Sync form data with store
+  useEffect(() => {
+    if (isValid) {
+      if (JSON.stringify(customerData) !== JSON.stringify(formValues)) {
+        setCustomerData(formValues)
+      }
+    } else {
+      if (customerData !== null) {
+        setCustomerData(null)
+      }
+    }
+  }, [isValid, formValues, customerData, setCustomerData])
 
   return (
-    <form id="shipping-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form id="shipping-form" onSubmit={(e) => e.preventDefault()} className="space-y-4">
       <div>
         <label className="block text-sm font-bold text-gray-900">Nombre Completo</label>
         <input
