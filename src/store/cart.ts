@@ -1,0 +1,83 @@
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+
+export interface CartItem {
+  _id: string
+  name: string
+  price: number
+  image: any
+  size: string
+  quantity: number
+  slug: string
+}
+
+interface CartStore {
+  items: CartItem[]
+  shippingZip: string
+  shippingCost: number
+  shippingMethod: 'shipping' | 'pickup'
+  customerData: any
+  addItem: (item: Omit<CartItem, 'quantity'>) => void
+  removeItem: (id: string, size: string) => void
+  updateQuantity: (id: string, size: string, quantity: number) => void
+  clearCart: () => void
+  getCartTotal: () => number
+  setShippingZip: (zip: string) => void
+  setShippingCost: (cost: number) => void
+  setShippingMethod: (method: 'shipping' | 'pickup') => void
+  setCustomerData: (data: any) => void
+}
+
+export const useCartStore = create<CartStore>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      shippingZip: '',
+      shippingCost: 0,
+      shippingMethod: 'shipping',
+      customerData: null,
+      addItem: (item) => {
+        const currentItems = get().items
+        const existingItem = currentItems.find(
+          (i) => i._id === item._id && i.size === item.size
+        )
+
+        if (existingItem) {
+          set({
+            items: currentItems.map((i) =>
+              i._id === item._id && i.size === item.size
+                ? { ...i, quantity: i.quantity + 1 }
+                : i
+            ),
+          })
+        } else {
+          set({ items: [...currentItems, { ...item, quantity: 1 }] })
+        }
+      },
+      removeItem: (id, size) => {
+        set({
+          items: get().items.filter((i) => !(i._id === id && i.size === size)),
+        })
+      },
+      updateQuantity: (id, size, quantity) => {
+        if (quantity < 1) return
+        set({
+          items: get().items.map((i) =>
+            i._id === id && i.size === size ? { ...i, quantity } : i
+          ),
+        })
+      },
+      clearCart: () => set({ items: [], shippingCost: 0, shippingZip: '', customerData: null }),
+      getCartTotal: () => {
+        return get().items.reduce((total, item) => total + item.price * item.quantity, 0)
+      },
+      setShippingZip: (zip) => set({ shippingZip: zip }),
+      setShippingCost: (cost) => set({ shippingCost: cost }),
+      setShippingMethod: (method) => set({ shippingMethod: method }),
+      setCustomerData: (data) => set({ customerData: data }),
+    }),
+    {
+      name: 'cart-storage',
+    }
+  )
+)
