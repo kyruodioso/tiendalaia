@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { MercadoPagoConfig, Preference } from 'mercadopago'
-import { client } from '@/sanity/client'
+import { serverClient } from '@/sanity/serverClient'
 import { customAlphabet } from 'nanoid'
 
 const nanoid = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 6)
@@ -11,6 +11,16 @@ const mp = new MercadoPagoConfig({
 
 export async function POST(req: Request) {
   try {
+    if (!process.env.MP_ACCESS_TOKEN) {
+      console.error('MP_ACCESS_TOKEN is not defined')
+      return NextResponse.json({ error: 'Server configuration error: Missing MP_ACCESS_TOKEN' }, { status: 500 })
+    }
+
+    if (!process.env.SANITY_API_TOKEN) {
+      console.error('SANITY_API_TOKEN is not defined')
+      return NextResponse.json({ error: 'Server configuration error: Missing SANITY_API_TOKEN' }, { status: 500 })
+    }
+
     const { items, shippingCost, customerData, shippingMethod } = await req.json()
 
     // Server-side validation of shipping cost
@@ -23,7 +33,7 @@ export async function POST(req: Request) {
 
     // Verify prices from Sanity
     const productIds = items.map((item: any) => item._id)
-    const products = await client.fetch(
+    const products = await serverClient.fetch(
       `*[_type == "product" && _id in $productIds]{
         _id,
         name,
@@ -66,7 +76,7 @@ export async function POST(req: Request) {
     }
 
     // Create Order in Sanity
-    const order = await client.create({
+    const order = await serverClient.create({
       _type: 'order',
       orderNumber,
       shippingMethod,
@@ -124,7 +134,7 @@ export async function POST(req: Request) {
     })
 
     // Update order with preference ID
-    await client.patch(order._id).set({ mpPreferenceId: result.id }).commit()
+    await serverClient.patch(order._id).set({ mpPreferenceId: result.id }).commit()
 
     return NextResponse.json({ init_point: result.init_point })
   } catch (err: any) {

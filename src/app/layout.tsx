@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   description: "Urban & Vintage Collection",
 };
 
+import { Toaster } from 'sonner';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,6 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} ${oswald.variable}`}>
         {children}
+        <Toaster richColors />
       </body>
     </html>
   );
