@@ -32,6 +32,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       price: product.price,
       image: product.image,
       size: selectedSize,
+      slug: product.slug,
     })
     toast.success('Agregado al carrito')
   }
