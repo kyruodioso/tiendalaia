@@ -55,15 +55,33 @@ export default defineType({
       to: [{ type: 'category' }],
     }),
     defineField({
-      name: 'sizes',
-      title: 'Sizes',
-      type: 'array',
-      of: [{ type: 'string' }],
+      name: 'size',
+      title: 'Size',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'XS', value: 'XS' },
+          { title: 'S', value: 'S' },
+          { title: 'M', value: 'M' },
+          { title: 'L', value: 'L' },
+          { title: 'XL', value: 'XL' },
+          { title: 'XXL', value: 'XXL' },
+          { title: 'Único', value: 'Único' },
+        ],
+      },
     }),
     defineField({
-      name: 'stock',
-      title: 'Stock',
-      type: 'number',
+      name: 'status',
+      title: 'Status',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Disponible', value: 'available' },
+          { title: 'Vendido', value: 'sold' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'available',
     }),
     defineField({
       name: 'description',
@@ -88,14 +106,15 @@ export default defineType({
       title: 'name',
       media: 'mainImage',
       price: 'price',
-      stock: 'stock',
+      status: 'status',
     },
     prepare(selection) {
-      const { title, media, price, stock } = selection
+      const { title, media, price, status } = selection
+      const statusText = status === 'sold' ? '🔴 Vendido' : '🟢 Disponible'
       return {
         title,
         media,
-        subtitle: `$${price} | Stock: ${stock ?? 0}`,
+        subtitle: `$${price} | ${statusText}`,
       }
     },
   },
