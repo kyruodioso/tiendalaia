@@ -25,6 +25,19 @@ export default defineType({
       type: 'number',
     }),
     defineField({
+      name: 'costPrice',
+      title: 'Cost Price',
+      type: 'number',
+      description: 'Costo de la prenda para calcular ganancias',
+    }),
+    defineField({
+      name: 'stock',
+      title: 'Stock',
+      type: 'number',
+      initialValue: 1,
+      validation: (Rule) => Rule.min(0),
+    }),
+    defineField({
       name: 'mainImage',
       title: 'Main Image',
       type: 'image',
