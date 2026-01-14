@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import RegretButton from './RegretButton'
 import { Instagram, Mail } from 'lucide-react'
 
@@ -8,7 +9,14 @@ export default function Footer() {
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                     <div>
-                        <h3 className="font-bold text-lg mb-4">Laia</h3>
+                        <div className="relative w-24 h-12 mb-4">
+                            <Image
+                                src="/logo.jpg"
+                                alt="Laia Store"
+                                fill
+                                className="object-contain object-left"
+                            />
+                        </div>
                         <p className="text-gray-600 text-sm">
                             Moda vintage y sostenible para un estilo único.
                         </p>

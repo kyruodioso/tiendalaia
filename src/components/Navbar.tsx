@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { clsx } from 'clsx'
@@ -49,12 +50,15 @@ export default function Navbar() {
           <div className="flex items-center gap-8">
             <Link
               href="/"
-              className={clsx(
-                "text-3xl font-display font-black tracking-tighter uppercase transition-colors duration-300",
-                isScrolled ? "text-gray-900" : "text-white drop-shadow-md"
-              )}
+              className="relative w-24 h-12"
             >
-              Laia
+              <Image
+                src="/logo.jpg"
+                alt="Laia Store"
+                fill
+                className="object-contain"
+                priority
+              />
             </Link>
 
             {/* Desktop Menu */}

@@ -9,6 +9,9 @@ const oswald = Oswald({ subsets: ["latin"], variable: '--font-oswald' });
 export const metadata: Metadata = {
   title: "Laia Store",
   description: "Urban & Vintage Collection",
+  icons: {
+    icon: '/logo.jpg',
+  },
 };
 
 import { Toaster } from 'sonner';
