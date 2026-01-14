@@ -3,10 +3,11 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 export default function Hero() {
   const containerRef = useRef(null)
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"]
@@ -22,16 +23,28 @@ export default function Hero() {
         style={{ y, opacity }}
         className="absolute inset-0 z-0"
       >
+        {/* Placeholder Image (Always visible initially) */}
+        <Image
+          src="/hero-1.png"
+          alt="Urban Fashion Model"
+          fill
+          className="object-cover object-center scale-105"
+          priority
+        />
+
+        {/* Video (Fades in when loaded) */}
         <video
           autoPlay
           loop
           muted
           playsInline
-          poster="/hero-1.png"
-          className="absolute inset-0 w-full h-full object-cover scale-105"
+          onLoadedData={() => setIsVideoLoaded(true)}
+          className={`absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000 ease-in-out ${isVideoLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
         >
           <source src="/hero-video.mp4" type="video/mp4" />
         </video>
+
         <div className="absolute inset-0 bg-black/40" />
       </motion.div>
 
