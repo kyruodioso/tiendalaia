@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 const oswald = Oswald({ subsets: ["latin"], variable: '--font-oswald' });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tiendalaia.vercel.app'), // Reemplazar con tu dominio real
+  metadataBase: new URL('https://prendas-laia.com.ar'),
   title: {
     default: "Laia | Moda Vintage & Urbana",
     template: "%s | Laia"
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "es_AR",
-    url: "https://tiendalaia.vercel.app",
+    url: "https://prendas-laia.com.ar",
     title: "Laia | Moda Vintage & Urbana",
     description: "Descubrí lo último en moda urbana y vintage. Estilo que define tu identidad.",
     siteName: "Laia Store",
