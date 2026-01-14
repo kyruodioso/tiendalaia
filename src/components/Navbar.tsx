@@ -16,13 +16,19 @@ interface Category {
   slug: { current: string }
 }
 
+import { usePathname } from 'next/navigation'
+
 export default function Navbar() {
+  const pathname = usePathname()
   const { scrollY } = useScroll()
   const [isScrolled, setIsScrolled] = useState(false)
   const items = useCartStore((state) => state.items)
   const [isMounted, setIsMounted] = useState(false)
   const [categories, setCategories] = useState<Category[]>([])
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const isHome = pathname === '/'
+  const isDark = isScrolled || !isHome
 
   useEffect(() => {
     setIsMounted(true)
@@ -39,7 +45,7 @@ export default function Navbar() {
     <motion.nav
       className={clsx(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-white/90 backdrop-blur-md border-b border-gray-200 py-2" : "bg-transparent py-4"
+        isDark ? "bg-white/90 backdrop-blur-md border-b border-gray-200 py-2" : "bg-transparent py-4"
       )}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -71,7 +77,7 @@ export default function Navbar() {
                 <button
                   className={clsx(
                     "flex items-center gap-1 font-medium text-sm uppercase tracking-wider transition-colors",
-                    isScrolled ? "text-gray-900 hover:text-gray-600" : "text-white hover:text-gray-200 drop-shadow-sm"
+                    isDark ? "text-gray-900 hover:text-gray-600" : "text-white hover:text-gray-200 drop-shadow-sm"
                   )}
                 >
                   Categorías
@@ -106,7 +112,7 @@ export default function Navbar() {
             href="/carrito"
             className={clsx(
               "relative p-2 transition-colors duration-300 hover:opacity-80",
-              isScrolled ? "text-gray-900" : "text-white drop-shadow-md"
+              isDark ? "text-gray-900" : "text-white drop-shadow-md"
             )}
           >
             <ShoppingBag className="w-6 h-6" />
