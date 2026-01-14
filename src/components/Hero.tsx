@@ -22,14 +22,17 @@ export default function Hero() {
         style={{ y, opacity }}
         className="absolute inset-0 z-0"
       >
-        <Image
-          src="/hero-1.png"
-          alt="Urban Fashion Model"
-          fill
-          className="object-cover object-center scale-110"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/50" />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/hero-1.png"
+          className="absolute inset-0 w-full h-full object-cover scale-105"
+        >
+          <source src="/hero-video.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/40" />
       </motion.div>
 
       {/* Content */}
