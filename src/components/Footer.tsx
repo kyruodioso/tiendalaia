@@ -9,12 +9,12 @@ export default function Footer() {
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                     <div>
-                        <div className="relative w-24 h-12 mb-4">
+                        <div className="relative w-16 h-16 mb-4 rounded-full overflow-hidden border border-gray-100 shadow-sm">
                             <Image
                                 src="/logo.jpg"
                                 alt="Laia Store"
                                 fill
-                                className="object-contain object-left"
+                                className="object-cover"
                             />
                         </div>
                         <p className="text-gray-600 text-sm">

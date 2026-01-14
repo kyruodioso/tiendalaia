@@ -50,13 +50,13 @@ export default function Navbar() {
           <div className="flex items-center gap-8">
             <Link
               href="/"
-              className="relative w-24 h-12"
+              className="relative w-12 h-12 rounded-full overflow-hidden border border-gray-100 shadow-sm"
             >
               <Image
                 src="/logo.jpg"
                 alt="Laia Store"
                 fill
-                className="object-contain"
+                className="object-cover"
                 priority
               />
             </Link>
