@@ -32,7 +32,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   }
 
   return (
-    <div className="min-h-screen bg-white pt-20 pb-32 lg:pb-0">
+    <div className="min-h-screen bg-white pt-20 lg:pb-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
           {/* Image Gallery */}
@@ -76,8 +76,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <PortableText value={product.description} />
             </div>
 
-            {/* Desktop Add to Cart */}
-            <div className="hidden lg:block">
+            {/* Add to Cart */}
+            <div>
               <AddToCartButton
                 product={{
                   _id: product._id,
@@ -91,20 +91,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Mobile Sticky Add to Cart */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 lg:hidden z-40">
-        <AddToCartButton
-          product={{
-            _id: product._id,
-            name: product.name,
-            price: product.price,
-            image: product.mainImage,
-            sizes: product.sizes,
-            slug: product.slug.current,
-          }}
-        />
       </div>
     </div>
   )
