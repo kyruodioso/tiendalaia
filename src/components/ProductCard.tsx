@@ -57,28 +57,26 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             src={urlFor(product.mainImage).width(600).height(800).url()}
             alt={product.name}
             fill
-            className={`object-cover transition-transform duration-700 ease-out ${
-              isHovered ? 'scale-105' : 'scale-100'
-            } ${isHovered && product.gallery?.[0] ? 'opacity-0' : 'opacity-100'}`}
+            className={`object-cover transition-transform duration-700 ease-out ${isHovered ? 'scale-105' : 'scale-100'
+              } ${isHovered && product.gallery?.[0] ? 'opacity-0' : 'opacity-100'}`}
           />
-          
+
           {/* Second Image (Hover) */}
           {product.gallery?.[0] && (
             <Image
               src={urlFor(product.gallery[0]).width(600).height(800).url()}
               alt={product.name}
               fill
-              className={`object-cover absolute inset-0 transition-all duration-700 ease-out ${
-                isHovered ? 'opacity-100 scale-105' : 'opacity-0 scale-100'
-              }`}
+              className={`object-cover absolute inset-0 transition-all duration-700 ease-out ${isHovered ? 'opacity-100 scale-105' : 'opacity-0 scale-100'
+                }`}
             />
           )}
 
           {/* Quick Add Overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-300">
-            <button className="w-full bg-white text-black py-3 font-bold text-sm uppercase tracking-wider hover:bg-black hover:text-white transition-colors shadow-lg">
+            <div className="w-full bg-white text-black py-3 font-bold text-sm uppercase tracking-wider hover:bg-black hover:text-white transition-colors shadow-lg text-center">
               Ver Producto
-            </button>
+            </div>
           </div>
         </div>
 

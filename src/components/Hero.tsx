@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRef } from 'react'
 
 export default function Hero() {
@@ -17,7 +18,7 @@ export default function Hero() {
   return (
     <section ref={containerRef} className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Parallax */}
-      <motion.div 
+      <motion.div
         style={{ y, opacity }}
         className="absolute inset-0 z-0"
       >
@@ -48,7 +49,7 @@ export default function Hero() {
           }}
         >
           <div className="overflow-hidden mb-6">
-            <motion.h1 
+            <motion.h1
               variants={{
                 hidden: { y: 100 },
                 visible: { y: 0, transition: { duration: 0.8, ease: [0.6, 0.01, -0.05, 0.95] } }
@@ -58,8 +59,8 @@ export default function Hero() {
               Nueva Colección
             </motion.h1>
           </div>
-          
-          <motion.p 
+
+          <motion.p
             variants={{
               hidden: { opacity: 0, y: 20 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
@@ -69,17 +70,19 @@ export default function Hero() {
             Descubrí lo último en moda urbana y vintage. Estilo que define tu identidad.
           </motion.p>
 
-          <motion.button
-            variants={{
-              hidden: { opacity: 0, scale: 0.8 },
-              visible: { opacity: 1, scale: 1, transition: { duration: 0.4 } }
-            }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-white text-black px-10 py-4 rounded-full text-lg font-bold uppercase tracking-widest hover:bg-gray-100 transition-colors shadow-xl"
-          >
-            Ver Productos
-          </motion.button>
+          <Link href="/shop">
+            <motion.button
+              variants={{
+                hidden: { opacity: 0, scale: 0.8 },
+                visible: { opacity: 1, scale: 1, transition: { duration: 0.4 } }
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white text-black px-10 py-4 rounded-full text-lg font-bold uppercase tracking-widest hover:bg-gray-100 transition-colors shadow-xl"
+            >
+              Ver Productos
+            </motion.button>
+          </Link>
         </motion.div>
       </div>
 
