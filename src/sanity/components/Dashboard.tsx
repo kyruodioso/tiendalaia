@@ -144,6 +144,28 @@ export default function Dashboard() {
                         </div>
                     </Card>
                 </Grid>
+
+                <Card padding={4} shadow={1} radius={2}>
+                    <Heading size={3} style={{ marginBottom: '1rem' }}>Detalle por Categoría</Heading>
+                    <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
+                        <thead>
+                            <tr style={{ borderBottom: '1px solid #eee' }}>
+                                <th style={{ padding: '10px' }}>Categoría</th>
+                                <th style={{ padding: '10px' }}>Stock Total</th>
+                                <th style={{ padding: '10px' }}>Ganancia Potencial</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {categoryLabels.map((cat) => (
+                                <tr key={cat} style={{ borderBottom: '1px solid #f5f5f5' }}>
+                                    <td style={{ padding: '10px' }}>{cat}</td>
+                                    <td style={{ padding: '10px' }}>{categories[cat].stock}</td>
+                                    <td style={{ padding: '10px' }}>${categories[cat].profit.toLocaleString()}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </Card>
             </Stack>
         </Card>
     )
