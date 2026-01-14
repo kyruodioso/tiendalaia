@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import RegretButton from './RegretButton'
+import { Instagram, Mail } from 'lucide-react'
 
 export default function Footer() {
     return (
@@ -33,19 +34,29 @@ export default function Footer() {
 
                     <div>
                         <h4 className="font-semibold mb-4">Contacto</h4>
-                        <ul className="space-y-2 text-sm text-gray-600">
-                            <li>Instagram: @laia.vintage</li>
-                            <li>Email: hola@laia.com</li>
-                        </ul>
+                        <div className="flex flex-col space-y-3">
+                            <a
+                                href="https://instagram.com/laia23store"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 text-sm text-gray-600 hover:text-black transition-colors"
+                            >
+                                <Instagram size={18} />
+                                @laia23store
+                            </a>
+                            <a
+                                href="mailto:contacto.laia23@gmail.com"
+                                className="flex items-center gap-2 text-sm text-gray-600 hover:text-black transition-colors"
+                            >
+                                <Mail size={18} />
+                                contacto.laia23@gmail.com
+                            </a>
+                        </div>
                     </div>
                 </div>
 
                 <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
                     <p>&copy; {new Date().getFullYear()} Tienda Laia. Todos los derechos reservados.</p>
-                    <div className="mt-2 md:mt-0 text-right">
-                        <p>Razón Social: [RAZON SOCIAL]</p>
-                        <p>CUIT: [XX-XXXXXXXX-X]</p>
-                    </div>
                 </div>
             </div>
         </footer>
