@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: "Laia Store",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Laia Store - Moda Vintage & Urbana",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Laia | Moda Vintage & Urbana",
     description: "Descubrí lo último en moda urbana y vintage. Estilo que define tu identidad.",
-    images: ["/og-image.png"],
+    images: ["/og-image.jpg"],
     creator: "@laia23store",
   },
   icons: {
