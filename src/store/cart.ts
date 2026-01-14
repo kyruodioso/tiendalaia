@@ -1,14 +1,32 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+import { SanityImageSource } from '@sanity/image-url/lib/types/types'
+
 export interface CartItem {
   _id: string
   name: string
   price: number
-  image: any
+  image: SanityImageSource
   size: string
   quantity: number
   slug: string
+}
+
+export interface CustomerData {
+  name: string
+  dni: string
+  email: string
+  phone: string
+  address: {
+    street: string
+    number: string
+    floor?: string
+    apartment?: string
+    city: string
+    province: string
+    zipCode: string
+  }
 }
 
 interface CartStore {
@@ -16,7 +34,7 @@ interface CartStore {
   shippingZip: string
   shippingCost: number
   shippingMethod: 'shipping' | 'pickup'
-  customerData: any
+  customerData: CustomerData | null
   addItem: (item: Omit<CartItem, 'quantity'>) => void
   removeItem: (id: string, size: string) => void
   updateQuantity: (id: string, size: string, quantity: number) => void
@@ -25,7 +43,7 @@ interface CartStore {
   setShippingZip: (zip: string) => void
   setShippingCost: (cost: number) => void
   setShippingMethod: (method: 'shipping' | 'pickup') => void
-  setCustomerData: (data: any) => void
+  setCustomerData: (data: CustomerData | null) => void
 }
 
 export const useCartStore = create<CartStore>()(

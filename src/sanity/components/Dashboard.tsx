@@ -9,9 +9,11 @@ import {
     Title,
     Tooltip,
     Legend,
-    ArcElement
+    ArcElement,
+    LineElement,
+    PointElement
 } from 'chart.js'
-import { Bar, Doughnut } from 'react-chartjs-2'
+import { Bar, Doughnut, Line } from 'react-chartjs-2'
 
 ChartJS.register(
     CategoryScale,
@@ -20,12 +22,15 @@ ChartJS.register(
     Title,
     Tooltip,
     Legend,
-    ArcElement
+    ArcElement,
+    LineElement,
+    PointElement
 )
 
 export default function Dashboard() {
     const client = useClient({ apiVersion: '2024-01-01' })
     const [data, setData] = useState<any>(null)
+    const [orders, setOrders] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -40,7 +45,14 @@ export default function Dashboard() {
             "category": category->title
           }
         `)
+                const ordersData = await client.fetch(`
+          *[_type == "order" && status == "paid"] | order(_createdAt asc) {
+            _createdAt,
+            totalAmount
+          }
+        `)
                 setData(products)
+                setOrders(ordersData)
             } catch (error) {
                 console.error("Error fetching data", error)
             } finally {
@@ -52,7 +64,7 @@ export default function Dashboard() {
 
     if (loading) return <Flex justify="center" align="center" height="fill" padding={5}><Spinner /></Flex>
 
-    // Process data
+    // Process product data
     const categories: Record<string, { stock: number; profit: number }> = {}
     let totalStock = 0
     let totalProfit = 0
@@ -72,6 +84,22 @@ export default function Dashboard() {
         totalStock += stock
         totalProfit += profit
     })
+
+    // Process sales data
+    const salesByMonth: Record<string, number> = {}
+    orders.forEach((order: any) => {
+        const date = new Date(order._createdAt)
+        const monthYear = date.toLocaleString('es-ES', { month: 'long', year: 'numeric' })
+        
+        if (!salesByMonth[monthYear]) {
+            salesByMonth[monthYear] = 0
+        }
+        salesByMonth[monthYear] += order.totalAmount
+    })
+
+    const salesLabels = Object.keys(salesByMonth)
+    const salesValues = Object.values(salesByMonth)
+
 
     const categoryLabels = Object.keys(categories)
     const stockData = categoryLabels.map(cat => categories[cat].stock)
@@ -109,6 +137,20 @@ export default function Dashboard() {
         ],
     }
 
+    const chartDataSales = {
+        labels: salesLabels,
+        datasets: [
+            {
+                label: 'Ventas Mensuales ($)',
+                data: salesValues,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.4,
+                fill: true,
+            },
+        ],
+    }
+
     return (
         <Card padding={4} tone="transparent" style={{ height: '100%', overflow: 'auto' }}>
             <Stack space={5}>
@@ -129,6 +171,14 @@ export default function Dashboard() {
                         </Stack>
                     </Card>
                 </Grid>
+
+                {/* Sales History Chart */}
+                <Card padding={4} shadow={1} radius={2}>
+                    <Heading size={3} style={{ marginBottom: '1rem' }}>Histórico de Ventas</Heading>
+                    <div style={{ height: '300px' }}>
+                        <Line data={chartDataSales} options={{ maintainAspectRatio: false, responsive: true }} />
+                    </div>
+                </Card>
 
                 <Grid columns={[1, 1, 2]} gap={4}>
                     <Card padding={4} shadow={1} radius={2}>
