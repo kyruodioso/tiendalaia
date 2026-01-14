@@ -11,6 +11,12 @@ export default defineType({
       type: 'string',
     }),
     defineField({
+      name: 'code',
+      title: 'Code',
+      type: 'string',
+      description: 'Código único del producto (SKU)',
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
@@ -114,20 +120,21 @@ export default defineType({
       ],
     },
   ],
-  preview: {
+    preview: {
     select: {
       title: 'name',
       media: 'mainImage',
       price: 'price',
       status: 'status',
+      code: 'code',
     },
     prepare(selection) {
-      const { title, media, price, status } = selection
+      const { title, media, price, status, code } = selection
       const statusText = status === 'sold' ? '🔴 Vendido' : '🟢 Disponible'
       return {
         title,
         media,
-        subtitle: `$${price} | ${statusText}`,
+        subtitle: `[${code || 'No Code'}] $${price} | ${statusText}`,
       }
     },
   },

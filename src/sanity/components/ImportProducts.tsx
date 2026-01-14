@@ -70,6 +70,7 @@ export default function ImportProducts() {
                 const doc: any = {
                     _type: 'product',
                     name: product.name,
+                    code: product.code || nanoid(8),
                     slug: { _type: 'slug', current: product.slug || product.name.toLowerCase().replace(/\s+/g, '-') + '-' + nanoid(4) },
                     price: parseFloat(product.price),
                     costPrice: product.costPrice ? parseFloat(product.costPrice) : 0,
@@ -98,7 +99,7 @@ export default function ImportProducts() {
 
                 await client.create(doc)
                 successCount++
-                setLogs(prev => [...prev, `✅ Producto importado: ${product.name}`])
+                setLogs(prev => [...prev, `✅ Producto importado: ${product.name} (Code: ${doc.code})`])
 
             } catch (err) {
                 console.error('Error creating product:', err)
@@ -122,7 +123,7 @@ export default function ImportProducts() {
                     <Stack space={4}>
                         <Text>Sube un archivo CSV con las siguientes columnas (la primera fila debe ser el encabezado):</Text>
                         <Box padding={3} style={{ background: '#f4f4f4', borderRadius: '4px' }}>
-                            <Text size={1} style={{ fontFamily: 'monospace' }}>name, price, costPrice, stock, category, description, size</Text>
+                            <Text size={1} style={{ fontFamily: 'monospace' }}>name, code, price, costPrice, stock, category, description, size</Text>
                         </Box>
 
                         <Label>Seleccionar archivo CSV</Label>
