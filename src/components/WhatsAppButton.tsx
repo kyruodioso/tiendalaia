@@ -15,7 +15,7 @@ export default function WhatsAppButton() {
     }, [])
 
     const handleClick = () => {
-        const phoneNumber = '5491112345678' // Replace with actual number
+        const phoneNumber = '5491124876090'
         let message = 'Hola Laia!'
 
         if (pathname?.startsWith('/product/')) {
