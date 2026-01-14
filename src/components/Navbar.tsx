@@ -1,20 +1,31 @@
 'use client'
 
 import Link from 'next/link'
-import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
+import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { clsx } from 'clsx'
-import { ShoppingBag } from 'lucide-react'
+import { ShoppingBag, ChevronDown } from 'lucide-react'
 import { useCartStore } from '@/store/cart'
+import { client } from '@/sanity/client'
+import { CATEGORIES_QUERY } from '@/sanity/queries'
+
+interface Category {
+  _id: string
+  name: string
+  slug: { current: string }
+}
 
 export default function Navbar() {
   const { scrollY } = useScroll()
   const [isScrolled, setIsScrolled] = useState(false)
   const items = useCartStore((state) => state.items)
   const [isMounted, setIsMounted] = useState(false)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
+    client.fetch(CATEGORIES_QUERY).then(setCategories)
   }, [])
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -35,16 +46,59 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <Link 
-            href="/" 
-            className={clsx(
-              "text-3xl font-display font-black tracking-tighter uppercase transition-colors duration-300",
-              isScrolled ? "text-gray-900" : "text-white drop-shadow-md"
-            )}
-          >
-            Laia
-          </Link>
-          <Link 
+          <div className="flex items-center gap-8">
+            <Link
+              href="/"
+              className={clsx(
+                "text-3xl font-display font-black tracking-tighter uppercase transition-colors duration-300",
+                isScrolled ? "text-gray-900" : "text-white drop-shadow-md"
+              )}
+            >
+              Laia
+            </Link>
+
+            {/* Desktop Menu */}
+            <div className="hidden md:flex items-center space-x-8">
+              <div
+                className="relative group"
+                onMouseEnter={() => setIsMenuOpen(true)}
+                onMouseLeave={() => setIsMenuOpen(false)}
+              >
+                <button
+                  className={clsx(
+                    "flex items-center gap-1 font-medium text-sm uppercase tracking-wider transition-colors",
+                    isScrolled ? "text-gray-900 hover:text-gray-600" : "text-white hover:text-gray-200 drop-shadow-sm"
+                  )}
+                >
+                  Categorías
+                  <ChevronDown size={16} />
+                </button>
+
+                <AnimatePresence>
+                  {isMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 ring-1 ring-black ring-opacity-5"
+                    >
+                      {categories.map((category) => (
+                        <Link
+                          key={category._id}
+                          href={`/shop?category=${category.slug.current}`}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 uppercase tracking-wide"
+                        >
+                          {category.name}
+                        </Link>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+
+          <Link
             href="/carrito"
             className={clsx(
               "relative p-2 transition-colors duration-300 hover:opacity-80",
