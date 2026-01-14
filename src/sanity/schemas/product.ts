@@ -83,4 +83,20 @@ export default defineType({
       ],
     },
   ],
+  preview: {
+    select: {
+      title: 'name',
+      media: 'mainImage',
+      price: 'price',
+      stock: 'stock',
+    },
+    prepare(selection) {
+      const { title, media, price, stock } = selection
+      return {
+        title,
+        media,
+        subtitle: `$${price} | Stock: ${stock ?? 0}`,
+      }
+    },
+  },
 })
