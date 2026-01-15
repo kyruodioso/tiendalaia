@@ -8,7 +8,7 @@ export const revalidate = 60
 
 async function getProduct(slug: string) {
   return client.fetch(
-    `*[_type == "product" && slug.current == $slug][0]{
+    `*[_type == "product" && slug.current == $slug && status != 'sold'][0]{
       _id,
       name,
       price,

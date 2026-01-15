@@ -13,7 +13,7 @@ export default async function ShopPage(props: Props) {
     const categorySlug = searchParams.category
 
     const query = categorySlug
-        ? groq`*[_type == "product" && category->slug.current == $categorySlug]{
+        ? groq`*[_type == "product" && category->slug.current == $categorySlug && status != 'sold']{
         _id,
         name,
         slug,
@@ -21,7 +21,7 @@ export default async function ShopPage(props: Props) {
         mainImage,
         "category": { "name": category->name }
       }`
-        : groq`*[_type == "product"]{
+        : groq`*[_type == "product" && status != 'sold']{
         _id,
         name,
         slug,
