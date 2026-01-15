@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Search } from 'lucide-react'
 
-export default function SearchFilter() {
+import { Suspense } from 'react'
+
+function SearchFilterContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [searchTerm, setSearchTerm] = useState('')
@@ -50,5 +52,13 @@ export default function SearchFilter() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function SearchFilter() {
+  return (
+    <Suspense fallback={<div className="h-24 bg-white border-b border-gray-100" />}>
+      <SearchFilterContent />
+    </Suspense>
   )
 }
