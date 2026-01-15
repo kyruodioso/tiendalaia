@@ -99,8 +99,8 @@ export default function ImportProducts() {
                 if (product.category) {
                     // Try to find existing category
                     const existingCategory = await client.fetch(
-                        `*[_type == "category" && title == $title][0]._id`,
-                        { title: product.category }
+                        `*[_type == "category" && name == $name][0]._id`,
+                        { name: product.category }
                     )
 
                     if (existingCategory) {
@@ -109,7 +109,7 @@ export default function ImportProducts() {
                         // Create new category
                         const newCategory = await client.create({
                             _type: 'category',
-                            title: product.category,
+                            name: product.category,
                             slug: { _type: 'slug', current: product.category.toLowerCase().replace(/\s+/g, '-') }
                         })
                         categoryId = newCategory._id
@@ -145,8 +145,8 @@ export default function ImportProducts() {
                     }
                 }
 
-                if (product.size) {
-                    doc.size = String(product.size) // Ensure size is a string
+                if (product.size !== undefined && product.size !== null && String(product.size).trim() !== '') {
+                    doc.size = String(product.size).trim()
                 }
 
                 await client.create(doc)
