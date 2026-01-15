@@ -87,20 +87,35 @@ export default function Navbar() {
                 <AnimatePresence>
                   {isMenuOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 ring-1 ring-black ring-opacity-5"
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-full left-0 mt-4 w-64 bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-gray-100 py-3 overflow-hidden"
                     >
+                      <div className="px-4 py-2 border-b border-gray-100 mb-2">
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Explorar</span>
+                      </div>
                       {categories.map((category) => (
                         <Link
                           key={category._id}
                           href={`/shop?category=${encodeURIComponent(category.slug.current)}`}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 uppercase tracking-wide"
+                          className="block px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-black hover:bg-gray-50 uppercase tracking-wide transition-all duration-200 flex items-center justify-between group/item"
                         >
                           {category.name}
+                          <span className="opacity-0 group-hover/item:opacity-100 transform translate-x-[-10px] group-hover/item:translate-x-0 transition-all duration-200 text-gray-400">
+                            &rarr;
+                          </span>
                         </Link>
                       ))}
+                      <div className="mt-2 pt-2 border-t border-gray-100">
+                        <Link
+                          href="/shop"
+                          className="block px-4 py-2.5 text-sm font-bold text-black hover:bg-gray-50 uppercase tracking-wide transition-colors"
+                        >
+                          Ver Todo
+                        </Link>
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
