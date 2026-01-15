@@ -90,7 +90,7 @@ export default function CartPage() {
                       <div>
                         <div className="flex justify-between">
                           <h3 className="text-lg">
-                            <Link href={`/product/${item.name.toLowerCase().replace(/ /g, '-')}`} className="font-bold text-gray-900 hover:text-gray-700 uppercase tracking-wide">
+                            <Link href={`/product/${encodeURIComponent(item.slug)}`} className="font-bold text-gray-900 hover:text-gray-700 uppercase tracking-wide">
                               {item.name}
                             </Link>
                           </h3>

@@ -9,7 +9,7 @@ export const revalidate = 60
 
 async function getProduct(slug: string) {
   return client.fetch(
-    `*[_type == "product" && slug.current == $slug && status != 'sold'][0]{
+    `*[_type == "product" && slug.current == $slug][0]{
       _id,
       name,
       price,
@@ -18,7 +18,8 @@ async function getProduct(slug: string) {
       gallery,
       size,
       slug,
-      category->{name}
+      category->{name},
+      status
     }`,
     { slug }
   )
@@ -29,8 +30,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = await getProduct(slug)
 
   if (!product) {
-    return <div>Producto no encontrado</div>
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900">Producto no encontrado</h2>
+          <p className="mt-2 text-gray-600">El producto que buscas no existe o ha sido eliminado.</p>
+        </div>
+      </div>
+    )
   }
+
+  const isSold = product.status === 'sold'
 
   return (
     <div className="min-h-screen bg-white pt-20 lg:pb-0">
@@ -44,9 +54,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 src={urlFor(product.mainImage).width(800).height(1000).url()}
                 alt={product.name}
                 fill
-                className="object-cover object-center"
+                className={`object-cover object-center ${isSold ? 'grayscale' : ''}`}
                 priority
               />
+              {isSold && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                  <span className="bg-red-600 text-white px-6 py-2 text-lg font-bold uppercase tracking-widest transform -rotate-12">
+                    Vendido
+                  </span>
+                </div>
+              )}
             </div>
             {/* Thumbnail Grid (Optional) */}
             {product.gallery && (
@@ -57,7 +74,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                       src={urlFor(image).width(200).height(300).url()}
                       alt={`${product.name} ${i + 1}`}
                       fill
-                      className="object-cover object-center"
+                      className={`object-cover object-center ${isSold ? 'grayscale' : ''}`}
                     />
                   </div>
                 ))}
@@ -79,16 +96,25 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
             {/* Add to Cart */}
             <div>
-              <AddToCartButton
-                product={{
-                  _id: product._id,
-                  name: product.name,
-                  price: product.price,
-                  image: product.mainImage,
-                  size: product.size,
-                  slug: product.slug.current,
-                }}
-              />
+              {isSold ? (
+                <button
+                  disabled
+                  className="w-full bg-gray-200 text-gray-500 py-4 text-sm font-bold uppercase tracking-widest cursor-not-allowed"
+                >
+                  Producto Vendido
+                </button>
+              ) : (
+                <AddToCartButton
+                  product={{
+                    _id: product._id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.mainImage,
+                    size: product.size,
+                    slug: product.slug.current,
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>

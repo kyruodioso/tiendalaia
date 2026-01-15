@@ -51,7 +51,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
         }}
       />
 
-      <Link href={`/product/${product.slug.current}`} className="block relative z-20">
+      <Link href={`/product/${encodeURIComponent(product.slug.current)}`} className="block relative z-20">
         <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 rounded-sm">
           {/* Main Image */}
           {product.mainImage && (
