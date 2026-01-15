@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useClient } from 'sanity'
 import Papa from 'papaparse'
+import * as XLSX from 'xlsx'
 import { Card, Stack, Heading, Text, Button, Flex, Box, Label, ToastProvider, useToast } from '@sanity/ui'
 import { nanoid } from 'nanoid'
 
@@ -10,27 +11,49 @@ export default function ImportProducts() {
     const [logs, setLogs] = useState<string[]>([])
     const toast = useToast()
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
 
         setIsUploading(true)
         setLogs([])
 
-        Papa.parse(file, {
-            header: true,
-            skipEmptyLines: true,
-            complete: async (results) => {
-                const products = results.data
+        const fileExtension = file.name.split('.').pop()?.toLowerCase()
+
+        if (fileExtension === 'csv') {
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: async (results) => {
+                    const products = results.data
+                    await processProducts(products)
+                    setIsUploading(false)
+                },
+                error: (error) => {
+                    console.error('Error parsing CSV:', error)
+                    toast.push({ status: 'error', title: 'Error al leer el archivo CSV' })
+                    setIsUploading(false)
+                }
+            })
+        } else if (fileExtension === 'xlsx' || fileExtension === 'xls') {
+            try {
+                const data = await file.arrayBuffer()
+                const workbook = XLSX.read(data)
+                const worksheetName = workbook.SheetNames[0]
+                const worksheet = workbook.Sheets[worksheetName]
+                const products = XLSX.utils.sheet_to_json(worksheet)
+                
                 await processProducts(products)
                 setIsUploading(false)
-            },
-            error: (error) => {
-                console.error('Error parsing CSV:', error)
-                toast.push({ status: 'error', title: 'Error al leer el archivo CSV' })
+            } catch (error) {
+                console.error('Error parsing Excel:', error)
+                toast.push({ status: 'error', title: 'Error al leer el archivo Excel' })
                 setIsUploading(false)
             }
-        })
+        } else {
+            toast.push({ status: 'error', title: 'Formato de archivo no soportado. Usa .csv o .xlsx' })
+            setIsUploading(false)
+        }
     }
 
     const processProducts = async (products: any[]) => {
@@ -123,15 +146,15 @@ export default function ImportProducts() {
 
                 <Card padding={4} shadow={1} radius={2}>
                     <Stack space={4}>
-                        <Text>Sube un archivo CSV con las siguientes columnas (la primera fila debe ser el encabezado):</Text>
+                        <Text>Sube un archivo CSV o Excel (.xlsx) con las siguientes columnas (la primera fila debe ser el encabezado):</Text>
                         <Box padding={3} style={{ background: '#f4f4f4', borderRadius: '4px' }}>
                             <Text size={1} style={{ fontFamily: 'monospace' }}>name, code, price, costPrice, stock, category, description, size</Text>
                         </Box>
 
-                        <Label>Seleccionar archivo CSV</Label>
+                        <Label>Seleccionar archivo</Label>
                         <input
                             type="file"
-                            accept=".csv"
+                            accept=".csv, .xlsx, .xls"
                             onChange={handleFileUpload}
                             disabled={isUploading}
                         />
