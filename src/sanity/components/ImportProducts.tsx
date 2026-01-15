@@ -60,7 +60,13 @@ export default function ImportProducts() {
         let successCount = 0
         let errorCount = 0
 
-        for (const product of products) {
+        for (const rawProduct of products) {
+            // Normalize keys to lowercase to handle case sensitivity issues
+            const product: any = {}
+            Object.keys(rawProduct).forEach(key => {
+                product[key.toLowerCase().trim()] = rawProduct[key]
+            })
+
             // Basic validation: Skip empty rows or rows without essential data
             if (!product.name || product.name.trim() === '' || !product.price) {
                 continue
