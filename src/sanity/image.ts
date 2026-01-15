@@ -7,5 +7,13 @@ const imageBuilder = imageUrlBuilder({
 })
 
 export const urlFor = (source: any) => {
+  if (!source) {
+    // Return a dummy object to prevent crashes if image is missing
+    return {
+      width: () => ({ height: () => ({ url: () => '' }) }),
+      height: () => ({ url: () => '' }),
+      url: () => '',
+    } as any
+  }
   return imageBuilder.image(source)
 }

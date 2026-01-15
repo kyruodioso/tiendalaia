@@ -53,13 +53,15 @@ export default function ProductCard({ product, index }: ProductCardProps) {
       <Link href={`/product/${product.slug.current}`} className="block relative z-20">
         <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 rounded-sm">
           {/* Main Image */}
-          <Image
-            src={urlFor(product.mainImage).width(600).height(800).url()}
-            alt={product.name}
-            fill
-            className={`object-cover transition-transform duration-700 ease-out ${isHovered ? 'scale-105' : 'scale-100'
-              } ${isHovered && product.gallery?.[0] ? 'opacity-0' : 'opacity-100'}`}
-          />
+          {product.mainImage && (
+            <Image
+              src={urlFor(product.mainImage).width(600).height(800).url()}
+              alt={product.name}
+              fill
+              className={`object-cover transition-transform duration-700 ease-out ${isHovered ? 'scale-105' : 'scale-100'
+                } ${isHovered && product.gallery?.[0] ? 'opacity-0' : 'opacity-100'}`}
+            />
+          )}
 
           {/* Second Image (Hover) */}
           {product.gallery?.[0] && (
