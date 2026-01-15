@@ -43,7 +43,7 @@ export default function Dashboard() {
             costPrice,
             stock,
             status,
-            "category": category->title,
+            "category": category->name,
             _updatedAt
           }
         `)
