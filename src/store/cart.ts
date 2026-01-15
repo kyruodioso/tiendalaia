@@ -1,13 +1,11 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-import { SanityImageSource } from '@sanity/image-url/lib/types/types'
-
 export interface CartItem {
   _id: string
   name: string
   price: number
-  image: SanityImageSource
+  image: any
   size: string
   quantity: number
   slug: string
