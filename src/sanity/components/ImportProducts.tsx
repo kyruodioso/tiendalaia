@@ -42,7 +42,7 @@ export default function ImportProducts() {
                 const worksheetName = workbook.SheetNames[0]
                 const worksheet = workbook.Sheets[worksheetName]
                 const products = XLSX.utils.sheet_to_json(worksheet)
-                
+
                 await processProducts(products)
                 setIsUploading(false)
             } catch (error) {
@@ -65,7 +65,7 @@ export default function ImportProducts() {
             const product: any = {}
             Object.keys(rawProduct).forEach(key => {
                 const normalizedKey = key.toLowerCase().trim()
-                
+
                 // Map common variations to canonical keys
                 if (normalizedKey === 'costprice' || normalizedKey === 'costo' || normalizedKey === 'precio de costo') {
                     product.costPrice = rawProduct[key]
@@ -94,7 +94,20 @@ export default function ImportProducts() {
             }
 
             try {
-                // 1. Handle Category
+                // 1. Check if product with code already exists
+                if (product.code) {
+                    const existingProduct = await client.fetch(
+                        `*[_type == "product" && code == $code][0]._id`,
+                        { code: product.code }
+                    )
+
+                    if (existingProduct) {
+                        setLogs(prev => [...prev, `⚠️ Omitido (Código existente): ${product.name} (Code: ${product.code})`])
+                        continue
+                    }
+                }
+
+                // 2. Handle Category
                 let categoryId = null
                 if (product.category) {
                     // Try to find existing category
