@@ -64,7 +64,28 @@ export default function ImportProducts() {
             // Normalize keys to lowercase to handle case sensitivity issues
             const product: any = {}
             Object.keys(rawProduct).forEach(key => {
-                product[key.toLowerCase().trim()] = rawProduct[key]
+                const normalizedKey = key.toLowerCase().trim()
+                
+                // Map common variations to canonical keys
+                if (normalizedKey === 'costprice' || normalizedKey === 'costo' || normalizedKey === 'precio de costo') {
+                    product.costPrice = rawProduct[key]
+                } else if (normalizedKey === 'size' || normalizedKey === 'talle' || normalizedKey === 'talles') {
+                    product.size = rawProduct[key]
+                } else if (normalizedKey === 'category' || normalizedKey === 'categoria' || normalizedKey === 'categoría') {
+                    product.category = rawProduct[key]
+                } else if (normalizedKey === 'price' || normalizedKey === 'precio') {
+                    product.price = rawProduct[key]
+                } else if (normalizedKey === 'name' || normalizedKey === 'nombre') {
+                    product.name = rawProduct[key]
+                } else if (normalizedKey === 'stock' || normalizedKey === 'cantidad') {
+                    product.stock = rawProduct[key]
+                } else if (normalizedKey === 'description' || normalizedKey === 'descripcion' || normalizedKey === 'descripción') {
+                    product.description = rawProduct[key]
+                } else if (normalizedKey === 'code' || normalizedKey === 'codigo' || normalizedKey === 'sku') {
+                    product.code = rawProduct[key]
+                } else {
+                    product[normalizedKey] = rawProduct[key]
+                }
             })
 
             // Basic validation: Skip empty rows or rows without essential data
@@ -125,7 +146,7 @@ export default function ImportProducts() {
                 }
 
                 if (product.size) {
-                    doc.size = product.size
+                    doc.size = String(product.size) // Ensure size is a string
                 }
 
                 await client.create(doc)
