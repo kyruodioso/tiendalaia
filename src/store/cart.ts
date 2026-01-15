@@ -14,19 +14,15 @@ export interface CartItem {
 }
 
 export interface CustomerData {
-  name: string
+  fullName: string
   dni: string
   email: string
   phone: string
-  address: {
-    street: string
-    number: string
-    floor?: string
-    apartment?: string
-    city: string
-    province: string
-    zipCode: string
-  }
+  province?: string
+  city?: string
+  address?: string
+  apartment?: string
+  zipCode?: string
 }
 
 interface CartStore {
