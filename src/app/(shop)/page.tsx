@@ -29,7 +29,7 @@ export default async function Home() {
               {category.name}
             </h2>
             <Link
-              href={`/shop?category=${category.slug.current}`}
+              href={`/shop?category=${encodeURIComponent(category.slug.current)}`}
               className="text-sm font-medium text-gray-500 hover:text-black transition-colors uppercase tracking-wider"
             >
               Ver todo {category.name} &rarr;
