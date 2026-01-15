@@ -77,6 +77,7 @@ export default defineType({
       name: 'size',
       title: 'Size',
       type: 'string',
+      description: 'Ingresa los talles disponibles separados por coma (ej: XS, S, M, L)',
     }),
     defineField({
       name: 'status',
