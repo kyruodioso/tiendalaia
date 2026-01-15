@@ -75,7 +75,7 @@ export default defineType({
     }),
     defineField({
       name: 'size',
-      title: 'Size',
+      title: 'Talles (Texto Manual)',
       type: 'string',
       description: 'Ingresa los talles disponibles separados por coma (ej: XS, S, M, L)',
     }),

@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
+import { useForm, DefaultValues } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useCartStore } from '@/store/cart'
@@ -45,7 +45,7 @@ export default function ShippingForm({ shippingMethod }: { shippingMethod: 'ship
   } = useForm<ShippingFormData>({
     resolver: zodResolver(schema),
     mode: 'onChange',
-    defaultValues: customerData || {},
+    defaultValues: (customerData as DefaultValues<ShippingFormData>) || ({} as DefaultValues<ShippingFormData>),
   })
 
   // Watch Zip Code to update shipping cost automatically if needed
