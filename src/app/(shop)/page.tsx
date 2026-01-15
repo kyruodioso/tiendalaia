@@ -3,6 +3,7 @@ import ProductCard from '@/components/ProductCard'
 import Hero from '@/components/Hero'
 import { CATEGORIES_WITH_PRODUCTS_QUERY } from '@/sanity/queries'
 import Link from 'next/link'
+import SearchFilter from '@/components/SearchFilter'
 
 interface CategoryWithProducts {
   _id: string
@@ -21,6 +22,7 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-white">
       <Hero />
+      <SearchFilter />
 
       {categories.map((category) => (
         <section key={category._id} className="max-w-7xl mx-auto px-4 py-16 border-b border-gray-100 last:border-0">
