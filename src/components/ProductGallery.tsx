@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { urlFor } from '@/sanity/image'
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react'
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 
 interface ProductGalleryProps {
     mainImage: any
@@ -15,11 +16,8 @@ interface ProductGalleryProps {
 export default function ProductGallery({ mainImage, gallery, productName, isSold }: ProductGalleryProps) {
     const [selectedImage, setSelectedImage] = useState(mainImage)
     const [isZoomOpen, setIsZoomOpen] = useState(false)
-    const [zoomLevel, setZoomLevel] = useState(1)
-    const [panPosition, setPanPosition] = useState({ x: 0, y: 0 })
 
     // Combine main image and gallery for a complete list
-    // Filter out any potential nulls if necessary
     const allImages = [mainImage, ...(gallery || [])].filter(Boolean)
 
     const handleImageClick = (image: any) => {
@@ -28,7 +26,6 @@ export default function ProductGallery({ mainImage, gallery, productName, isSold
 
     const handleMainImageClick = () => {
         setIsZoomOpen(true)
-        setZoomLevel(1) // Reset zoom
     }
 
     const handleNextImage = (e: React.MouseEvent) => {
@@ -43,28 +40,6 @@ export default function ProductGallery({ mainImage, gallery, productName, isSold
         const currentIndex = allImages.indexOf(selectedImage)
         const prevIndex = (currentIndex - 1 + allImages.length) % allImages.length
         setSelectedImage(allImages[prevIndex])
-    }
-
-    const handleZoomToggle = (e: React.MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation()
-        if (zoomLevel > 1) {
-            setZoomLevel(1)
-            setPanPosition({ x: 0, y: 0 })
-        } else {
-            setZoomLevel(2.5)
-            // Calculate click position relative to image to center zoom there?
-            // For simplicity, just zoom in center or follow mouse in a more complex implementation
-            // Let's just zoom in center for now or implement a simple pan
-        }
-    }
-
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (zoomLevel > 1) {
-            const { left, top, width, height } = e.currentTarget.getBoundingClientRect()
-            const x = ((e.clientX - left) / width) * 100
-            const y = ((e.clientY - top) / height) * 100
-            setPanPosition({ x, y })
-        }
     }
 
     return (
@@ -123,12 +98,11 @@ export default function ProductGallery({ mainImage, gallery, productName, isSold
             {isZoomOpen && (
                 <div
                     className="fixed inset-0 z-[60] bg-white/95 backdrop-blur-sm flex items-center justify-center animate-in fade-in duration-200"
-                    onClick={() => setIsZoomOpen(false)}
                 >
                     {/* Close Button */}
                     <button
                         onClick={() => setIsZoomOpen(false)}
-                        className="absolute top-4 right-4 z-50 p-2 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full transition-colors"
+                        className="absolute top-4 right-4 z-[70] p-2 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full transition-colors"
                     >
                         <X size={32} />
                     </button>
@@ -138,46 +112,40 @@ export default function ProductGallery({ mainImage, gallery, productName, isSold
                         <>
                             <button
                                 onClick={handlePrevImage}
-                                className="absolute left-4 z-50 p-2 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full transition-colors hidden md:block"
+                                className="absolute left-4 z-[70] p-2 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full transition-colors hidden md:block"
                             >
                                 <ChevronLeft size={40} />
                             </button>
                             <button
                                 onClick={handleNextImage}
-                                className="absolute right-4 z-50 p-2 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full transition-colors hidden md:block"
+                                className="absolute right-4 z-[70] p-2 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full transition-colors hidden md:block"
                             >
                                 <ChevronRight size={40} />
                             </button>
                         </>
                     )}
 
-                    {/* Image Container */}
-                    <div
-                        className="relative w-full h-full max-w-7xl max-h-[90vh] p-4 flex items-center justify-center overflow-hidden"
-                        onClick={handleZoomToggle}
-                        onMouseMove={handleMouseMove}
-                        onMouseLeave={() => setZoomLevel(1)}
-                        style={{ cursor: zoomLevel > 1 ? 'zoom-out' : 'zoom-in' }}
-                    >
-                        <div
-                            className="relative w-full h-full flex items-center justify-center"
-                            style={{
-                                transform: zoomLevel > 1 ? `scale(${zoomLevel})` : 'scale(1)',
-                                transformOrigin: zoomLevel > 1 ? `${panPosition.x}% ${panPosition.y}%` : 'center',
-                                transition: 'transform 0.2s ease-out'
-                            }}
+                    {/* Image Container with React Zoom Pan Pinch */}
+                    <div className="w-full h-full flex items-center justify-center p-4">
+                        <TransformWrapper
+                            initialScale={1}
+                            minScale={1}
+                            maxScale={4}
+                            centerOnInit
                         >
-                            <Image
-                                src={urlFor(selectedImage).width(1600).height(2000).url()}
-                                alt={productName}
-                                fill
-                                className="object-contain"
-                                quality={100}
-                            />
-                        </div>
+                            <TransformComponent wrapperClass="!w-full !h-full flex items-center justify-center" contentClass="!w-full !h-full flex items-center justify-center">
+                                <div className="relative w-full h-full max-w-5xl max-h-[85vh] flex items-center justify-center">
+                                    <Image
+                                        src={urlFor(selectedImage).width(1600).height(2000).url()}
+                                        alt={productName}
+                                        fill
+                                        className="object-contain"
+                                        quality={100}
+                                    />
+                                </div>
+                            </TransformComponent>
+                        </TransformWrapper>
                     </div>
-
-                    {/* Mobile Navigation Hint or Dots could go here */}
                 </div>
             )}
         </div>
