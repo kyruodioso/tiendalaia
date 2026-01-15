@@ -3,6 +3,7 @@ import { urlFor } from '@/sanity/image'
 import { PortableText } from 'next-sanity'
 import Image from 'next/image'
 import AddToCartButton from '@/components/AddToCartButton'
+import { formatPrice } from '@/lib/utils'
 
 export const revalidate = 60
 
@@ -69,7 +70,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div className="mb-6">
               <h2 className="text-sm text-gray-700 uppercase tracking-widest mb-2">{product.category?.name}</h2>
               <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tighter sm:text-4xl">{product.name}</h1>
-              <p className="text-2xl font-medium text-gray-900 mt-4">${product.price}</p>
+              <p className="text-2xl font-medium text-gray-900 mt-4">{formatPrice(product.price)}</p>
             </div>
 
             <div className="prose prose-sm text-gray-700 mb-8">

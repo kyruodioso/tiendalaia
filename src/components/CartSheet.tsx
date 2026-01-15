@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 
 
 import ShippingForm from './ShippingForm'
+import { formatPrice } from '@/lib/utils'
 
 interface CartSheetProps {
   triggerClassName?: string
@@ -123,7 +124,7 @@ export default function CartSheet({ triggerClassName }: CartSheetProps) {
                       <div>
                         <div className="flex justify-between text-base font-medium text-gray-900">
                           <h3>{item.name}</h3>
-                          <p className="ml-4">${item.price * item.quantity}</p>
+                          <p className="ml-4">{formatPrice(item.price * item.quantity)}</p>
                         </div>
                         <p className="mt-1 text-sm text-gray-700">Talle: {item.size}</p>
                       </div>
@@ -205,17 +206,17 @@ export default function CartSheet({ triggerClassName }: CartSheetProps) {
 
             <div className="flex justify-between text-base font-medium text-gray-900 mb-2">
               <p>Subtotal</p>
-              <p>${getCartTotal()}</p>
+              <p>{formatPrice(getCartTotal())}</p>
             </div>
             {shippingCost > 0 && (
               <div className="flex justify-between text-base font-medium text-gray-900 mb-2">
                 <p>Envío</p>
-                <p>${shippingCost}</p>
+                <p>{formatPrice(shippingCost)}</p>
               </div>
             )}
             <div className="flex justify-between text-lg font-bold text-gray-900 mb-4">
               <p>Total</p>
-              <p>${getCartTotal() + shippingCost}</p>
+              <p>{formatPrice(getCartTotal() + shippingCost)}</p>
             </div>
             <p className="mt-0.5 text-sm text-gray-600 mb-6">
               Impuestos calculados al finalizar la compra.

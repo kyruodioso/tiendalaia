@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { urlFor } from '@/sanity/image'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import { formatPrice } from '@/lib/utils'
 
 interface ProductCardProps {
   product: {
@@ -85,7 +86,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
         <div className="mt-4 space-y-1 p-2">
           <p className="text-xs text-gray-700 uppercase tracking-widest">{product.category?.name}</p>
           <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">{product.name}</h3>
-          <p className="text-sm font-medium text-gray-900">${product.price}</p>
+          <p className="text-sm font-medium text-gray-900">{formatPrice(product.price)}</p>
         </div>
       </Link>
     </motion.div>
