@@ -28,7 +28,7 @@ function SearchFilterContent() {
   }
 
   return (
-    <div className="w-full bg-white border-b border-gray-100 py-6 sticky top-16 z-30 shadow-sm">
+    <div className="w-full bg-white border-b border-gray-100 py-6 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto">
           <div className="relative">

@@ -56,7 +56,7 @@ export default async function ShopPage(props: Props) {
     if (searchQuery) title = `Resultados para "${searchQuery}"`
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen pt-20 lg:pt-24">
             <SearchFilter />
             <div className="max-w-7xl mx-auto px-4 py-12">
                 <h1 className="text-4xl font-display font-bold mb-12 capitalize text-center">
