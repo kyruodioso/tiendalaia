@@ -96,7 +96,7 @@ export default function ImportProducts() {
                 }
 
                 if (product.size) {
-                    doc.sizes = product.size.toString().split(',').map((s: string) => s.trim()).filter((s: string) => s !== '')
+                    doc.size = product.size
                 }
 
                 await client.create(doc)

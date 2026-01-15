@@ -11,7 +11,7 @@ interface AddToCartButtonProps {
     name: string
     price: number
     image: any
-    sizes: string[]
+    size: string
     slug: string
   }
 }
@@ -40,7 +40,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-4 gap-2">
-        {product.sizes.map((size) => (
+        {product.size?.split(',').map((s) => s.trim()).filter(Boolean).map((size) => (
           <button
             key={size}
             onClick={() => setSelectedSize(size)}

@@ -15,7 +15,7 @@ async function getProduct(slug: string) {
       description,
       mainImage,
       gallery,
-      sizes,
+      size,
       slug,
       category->{name}
     }`,
@@ -84,7 +84,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                   name: product.name,
                   price: product.price,
                   image: product.mainImage,
-                  sizes: product.sizes,
+                  size: product.size,
                   slug: product.slug.current,
                 }}
               />
