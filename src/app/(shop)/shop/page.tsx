@@ -2,6 +2,8 @@ import { client } from '@/sanity/client'
 import ProductCard from '@/components/ProductCard'
 import { groq } from 'next-sanity'
 
+import Link from 'next/link'
+
 interface Props {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
@@ -44,7 +46,10 @@ export default async function ShopPage(props: Props) {
                 </div>
             ) : (
                 <div className="text-center py-20">
-                    <p className="text-xl text-gray-500">No se encontraron productos en esta categoría.</p>
+                    <p className="text-xl text-gray-500 mb-8">No se encontraron productos en esta categoría.</p>
+                    <Link href="/shop" className="inline-block bg-black text-white px-8 py-3 text-sm font-bold uppercase tracking-wider hover:bg-gray-800 transition-colors">
+                        Ver todos los productos
+                    </Link>
                 </div>
             )}
         </div>

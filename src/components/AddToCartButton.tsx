@@ -47,7 +47,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
             className={`py-2 text-sm font-medium border transition-colors ${
               selectedSize === size
                 ? 'border-black bg-black text-white'
-                : 'border-gray-200 hover:border-black'
+                : 'border-gray-300 text-gray-900 hover:border-black hover:bg-gray-50'
             }`}
           >
             {size}
