@@ -77,17 +77,6 @@ export default defineType({
       name: 'size',
       title: 'Size',
       type: 'string',
-      options: {
-        list: [
-          { title: 'XS', value: 'XS' },
-          { title: 'S', value: 'S' },
-          { title: 'M', value: 'M' },
-          { title: 'L', value: 'L' },
-          { title: 'XL', value: 'XL' },
-          { title: 'XXL', value: 'XXL' },
-          { title: 'Único', value: 'Único' },
-        ],
-      },
     }),
     defineField({
       name: 'status',

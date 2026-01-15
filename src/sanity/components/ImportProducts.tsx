@@ -19,6 +19,7 @@ export default function ImportProducts() {
 
         Papa.parse(file, {
             header: true,
+            skipEmptyLines: true,
             complete: async (results) => {
                 const products = results.data
                 await processProducts(products)
@@ -37,8 +38,8 @@ export default function ImportProducts() {
         let errorCount = 0
 
         for (const product of products) {
-            // Basic validation
-            if (!product.name || !product.price) {
+            // Basic validation: Skip empty rows or rows without essential data
+            if (!product.name || product.name.trim() === '' || !product.price) {
                 continue
             }
 
