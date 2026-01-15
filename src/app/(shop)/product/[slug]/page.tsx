@@ -27,9 +27,12 @@ async function getProduct(slug: string) {
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
+  console.log('ProductPage received slug:', slug)
   const product = await getProduct(slug)
+  console.log('ProductPage fetch result:', product ? 'Found' : 'Not Found')
 
   if (!product) {
+    console.log('Product not found for slug:', slug)
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
