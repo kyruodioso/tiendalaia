@@ -79,8 +79,9 @@ export default function ImportProducts() {
                     status: 'available',
                     description: product.description ? [
                         {
+                            _key: nanoid(),
                             _type: 'block',
-                            children: [{ _type: 'span', text: product.description }],
+                            children: [{ _key: nanoid(), _type: 'span', text: product.description }],
                             markDefs: [],
                             style: 'normal'
                         }
@@ -95,7 +96,7 @@ export default function ImportProducts() {
                 }
 
                 if (product.size) {
-                    doc.size = product.size
+                    doc.sizes = product.size.toString().split(',').map((s: string) => s.trim()).filter((s: string) => s !== '')
                 }
 
                 await client.create(doc)

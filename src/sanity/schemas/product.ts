@@ -74,9 +74,10 @@ export default defineType({
       to: [{ type: 'category' }],
     }),
     defineField({
-      name: 'size',
-      title: 'Size',
-      type: 'string',
+      name: 'sizes',
+      title: 'Sizes',
+      type: 'array',
+      of: [{ type: 'string' }],
     }),
     defineField({
       name: 'status',
