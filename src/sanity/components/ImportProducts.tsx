@@ -60,6 +60,16 @@ export default function ImportProducts() {
         let successCount = 0
         let errorCount = 0
 
+        // 0. Fetch all existing categories once to avoid N+1 queries and handle duplicates better
+        const existingCategories = await client.fetch(`*[_type == "category"]{_id, name}`)
+        const categoryMap = new Map<string, string>()
+
+        existingCategories.forEach((cat: any) => {
+            if (cat.name) {
+                categoryMap.set(cat.name.toLowerCase().trim(), cat._id)
+            }
+        })
+
         for (const rawProduct of products) {
             // Normalize keys to lowercase to handle case sensitivity issues
             const product: any = {}
@@ -110,22 +120,20 @@ export default function ImportProducts() {
                 // 2. Handle Category
                 let categoryId = null
                 if (product.category) {
-                    // Try to find existing category
-                    const existingCategory = await client.fetch(
-                        `*[_type == "category" && name == $name][0]._id`,
-                        { name: product.category }
-                    )
+                    const normalizedCategoryName = String(product.category).toLowerCase().trim()
 
-                    if (existingCategory) {
-                        categoryId = existingCategory
+                    if (categoryMap.has(normalizedCategoryName)) {
+                        categoryId = categoryMap.get(normalizedCategoryName)
                     } else {
                         // Create new category
                         const newCategory = await client.create({
                             _type: 'category',
-                            name: product.category,
-                            slug: { _type: 'slug', current: product.category.toLowerCase().replace(/\s+/g, '-') }
+                            name: product.category.trim(), // Use original casing but trimmed
+                            slug: { _type: 'slug', current: normalizedCategoryName.replace(/\s+/g, '-') }
                         })
                         categoryId = newCategory._id
+                        // Update map so subsequent products in this batch use the new category
+                        categoryMap.set(normalizedCategoryName, newCategory._id)
                         setLogs(prev => [...prev, `Categoría creada: ${product.category}`])
                     }
                 }
