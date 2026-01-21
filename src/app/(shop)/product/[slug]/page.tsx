@@ -18,7 +18,8 @@ async function getProduct(slug: string) {
       size,
       slug,
       category->{name},
-      status
+      status,
+      stock
     }`,
     { slug }
   )
@@ -42,13 +43,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     )
   }
 
-  const isSold = product.status === 'sold'
+  const isSold = product.status === 'sold' || product.stock === 0
 
   return (
     <div className="min-h-screen bg-white pt-20 lg:pb-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
-          {/* Image Gallery */}
           {/* Image Gallery */}
           <ProductGallery
             mainImage={product.mainImage}
@@ -76,7 +76,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                   disabled
                   className="w-full bg-gray-200 text-gray-500 py-4 text-sm font-bold uppercase tracking-widest cursor-not-allowed"
                 >
-                  Producto Vendido
+                  Sin Stock
                 </button>
               ) : (
                 <AddToCartButton
@@ -87,6 +87,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     image: product.mainImage,
                     size: product.size,
                     slug: product.slug.current,
+                    stock: product.stock
                   }}
                 />
               )}
