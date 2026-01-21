@@ -126,21 +126,27 @@ export default function ProductGallery({ mainImage, gallery, productName, isSold
                     )}
 
                     {/* Image Container with React Zoom Pan Pinch */}
-                    <div className="w-full h-full flex items-center justify-center p-4">
+                    <div className="w-full h-full flex items-center justify-center bg-black/90">
                         <TransformWrapper
                             initialScale={1}
                             minScale={1}
-                            maxScale={4}
+                            maxScale={5}
                             centerOnInit
+                            wheel={{ step: 0.1 }}
                         >
-                            <TransformComponent wrapperClass="!w-full !h-full flex items-center justify-center" contentClass="!w-full !h-full flex items-center justify-center">
-                                <div className="relative w-full h-full max-w-5xl max-h-[85vh] flex items-center justify-center">
+                            <TransformComponent
+                                wrapperClass="!w-full !h-full"
+                                contentStyle={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}
+                            >
+                                <div className="relative w-full h-full p-4 md:p-8">
                                     <Image
-                                        src={urlFor(selectedImage).width(1600).height(2000).url()}
+                                        src={urlFor(selectedImage).width(2000).url()}
                                         alt={productName}
                                         fill
                                         className="object-contain"
                                         quality={100}
+                                        priority
+                                        sizes="100vw"
                                     />
                                 </div>
                             </TransformComponent>
