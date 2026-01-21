@@ -29,7 +29,13 @@ export default async function ShopPage(props: Props) {
         }`
         params = { categorySlug }
     } else if (searchQuery) {
-        query = groq`*[_type == "product" && name match $searchQuery + "*" && status != 'sold']{
+        // Handle simple pluralization for Spanish (removing 's' or 'es')
+        const term = Array.isArray(searchQuery) ? searchQuery[0] : searchQuery
+        const singularTerm = term.endsWith('es') ? term.slice(0, -2) : (term.endsWith('s') ? term.slice(0, -1) : term)
+
+        // Construct a query that checks for the original term OR the singular term
+        // We use * wildcard for partial matches
+        query = groq`*[_type == "product" && (name match $term + "*" || name match $singularTerm + "*") && status != 'sold']{
             _id,
             name,
             slug,
@@ -37,7 +43,7 @@ export default async function ShopPage(props: Props) {
             mainImage,
             "category": { "name": category->name }
         }`
-        params = { searchQuery }
+        params = { term, singularTerm }
     } else {
         query = groq`*[_type == "product" && status != 'sold']{
             _id,
